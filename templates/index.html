@@ -25,23 +25,20 @@
             <div class="add-task-form">
                 <h3>Новая задача</h3>
             
-                <form action="/" method="POST">
-                    <div class="settings-group">
-                        <label>Название:</label>
-                        <input type="text" placeholder="Что нужно сделать?" class="input-field" name="todo_name" required>
-                    </div>
-                </form>
+                <div class="settings-group">
+                    <label>Название:</label>
+                    <input type="text" placeholder="Что нужно сделать?" class="input-field" name="todo_name" required>
+                </div>
 
-                <form action="/" method="POST">
-                    <div class="settings-group" name="todo_priority">
-                        <label>Приоритет:</label>
-                        <select class="input-field select-priority">
-                            <option value="high">🔥 Высокий</option>
-                            <option value="medium" selected>⚡ Средний</option>
-                            <option value="low">🌱 Низкий</option>
-                        </select>
-                    </div>
-                </form>
+                <div class="settings-group">
+                    <label>Приоритет:</label>
+                    <select class="input-field select-priority" name="todo_priority">
+                        <option value="high">🔥 Высокий</option>
+                        <option value="medium" selected>⚡ Средний</option>
+                        <option value="low">🌱 Низкий</option>
+                    </select>
+                </div>
+        
 
                 <div class="settings-group">
                     <label>Повтор:</label>
