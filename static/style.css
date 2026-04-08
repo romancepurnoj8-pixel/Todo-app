@@ -304,3 +304,13 @@ tr:has(.custom-cb:checked) .task-text {
     transform: translateY(-1px);
     box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
 }
+
+.task-row.completed .task-text {
+    text-decoration: line-through;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.task-row.completed {
+    background-color: rgba(0, 0, 0, 0.02);
+}

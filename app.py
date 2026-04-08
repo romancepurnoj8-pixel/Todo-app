@@ -76,5 +76,18 @@ def index():
         display_title=display_title
     )
 
+@app.route("/update_status/<int:task_id>", methods=["POST"])
+def update_status(task_id):
+    data = request.get_json()
+    if not data:
+        return {"status": "error", "message": "No data provided"}, 400
+        
+    new_status = data.get('status')
+    
+    with get_db_connection() as conn:
+        conn.execute("UPDATE todo SET status = ? WHERE id = ?", (new_status, task_id))
+        conn.commit()
+    return {"status": "success"}
+
 if __name__ == "__main__":
     app.run(debug=True)

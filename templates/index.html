@@ -22,11 +22,9 @@
                         {% if day == 0 %}
                             <span></span> 
                         {% else %}
-                            {# Генерируем строку даты в формате YYYY-MM-DD для фильтрации #}
                             {% set day_date = "%d-%02d-%02d"|format(cal.year, cal.month, day) %}
                             <div class="day {% if cal.is_today(day) %}active{% endif %} {% if selected_date == day_date %}selected{% endif %}">
-                                <a href="/?date={{ day_date }}" 
-                                   style="text-decoration: none; color: inherit; display: block;">
+                                <a href="/?date={{ day_date }}" style="text-decoration: none; color: inherit; display: block;">
                                     {{ day }}
                                 </a>
                             </div>
@@ -44,12 +42,10 @@
         <form action="/" method="POST">
             <div class="add-task-form">
                 <h3>Новая задача</h3>
-            
                 <div class="settings-group">
                     <label>Название:</label>
                     <input type="text" placeholder="Что нужно сделать?" class="input-field" name="todo_name" required>
                 </div>
-
                 <div class="settings-group">
                     <label>Приоритет:</label>
                     <select class="input-field select-priority" name="todo_priority">
@@ -58,7 +54,6 @@
                         <option value="low">🌱 Низкий</option>
                     </select>
                 </div>
-
                 <div class="settings-group">
                     <label>Повтор:</label>
                     <select class="input-field" name="todo_return">
@@ -68,13 +63,11 @@
                         <option value="weekend">Выходные</option>
                     </select>
                 </div> 
-
                 <div class="settings-group">
                     <label>Дата:</label>
                     <input type="date" class="input-field" name="todo_date" required 
                            value="{{ selected_date if selected_date else '%d-%02d-%02d'|format(cal.year, cal.month, cal.day_today or 1) }}">
                 </div>
-
                 <button type="submit" class="add-btn">Добавить в список</button>
             </div>
         </form>
@@ -82,7 +75,6 @@
 
     <main class="todo-section">
         <div class="header-flex">
-            {# Выводим заголовок в зависимости от фильтра #}
             <h1>{{ display_title if display_title else "Мои задачи ✨" }}</h1>
             <div class="filter-chips">
                 <a href="/" class="chip {% if not selected_date %}active{% endif %}" style="text-decoration: none; color: inherit;">Все задачи ({{ tasks|length }})</a>
@@ -103,15 +95,15 @@
             </thead>
             <tbody>
                 {% for task in tasks %}
-                <tr>
-                    <form>
-                        <td>
-                            <input type="submit" id="task-{{ task['id'] }}" class="custom-cb" name="subm_todo">
-                            <label for="task-{{ task['id'] }}"></label>
-                        </td>
-                    </form>
+                <tr class="task-row {% if task['status'] == 1 %}completed{% endif %}" id="row-{{ task['id'] }}">
+                    <td>
+                        <input type="checkbox" id="task-{{ task['id'] }}" class="custom-cb" 
+                               {% if task['status'] == 1 %}checked{% endif %}
+                               onchange="updateStatus({{ task['id'] }}, this.checked)">
+                        <label for="task-{{ task['id'] }}"></label>
+                    </td>
                     <td class="task-text">{{ task['name'] }}</td>
-                    <td class="task-days">{{ task['dade'] }}</td>
+                    <td class="task-days">{{ task['date'] }}</td>
                     <td>
                         <span class="badge {{ task['priority'] }}">
                             {% if task['priority'] == 'high' %} Высокий
@@ -123,13 +115,43 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="4" style="text-align: center; padding: 20px; color: #999;">Задач на этот день нет. Время отдыхать! ☕</td>
+                    <td colspan="4" style="text-align: center; padding: 20px; color: #999;">Задач нет. Время отдыхать! ☕</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </main>
 </div>
+
+<script>
+function updateStatus(taskId, isChecked) {
+    const status = isChecked ? 1 : 0;
+    const row = document.getElementById('row-' + taskId);
+    
+    // Визуально зачеркиваем сразу (для скорости)
+    if (isChecked) {
+        row.classList.add('completed');
+    } else {
+        row.classList.remove('completed');
+    }
+
+    // Отправляем запрос на сервер
+    fetch('/update_status/' + taskId, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: status })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status !== 'success') {
+            alert('Ошибка при сохранении статуса');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
 
 </body>
 </html>
