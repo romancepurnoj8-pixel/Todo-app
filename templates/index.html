@@ -20,7 +20,6 @@
             </div>
         </div>
 
-
         <form action="/" method="POST">
             <div class="add-task-form">
                 <h3>Новая задача</h3>
@@ -38,7 +37,6 @@
                         <option value="low">🌱 Низкий</option>
                     </select>
                 </div>
-        
 
                 <div class="settings-group">
                     <label>Повтор:</label>
@@ -46,29 +44,23 @@
                         <option>Единоразово</option>
                         <option>Каждый Пн</option>
                         <option>Будни (Пн-Пт)</option>
-                         <option>Выходные</option>
+                        <option>Выходные</option>
                     </select>
-
-                <div class="settings-group">
+                </div> <div class="settings-group">
                     <label>Дата:</label>
-                    <input type="date" class="input-field" name="todo_dade">
+                    <input type="date" class="input-field" name="todo_dade" required>
                 </div>
 
                 <button type="submit" class="add-btn">Добавить в список</button>
-
             </div>
         </form>
-
-</div>
     </aside>
 
     <main class="todo-section">
         <div class="header-flex">
             <h1>Мои задачи ✨</h1>
             <div class="filter-chips">
-                <span class="chip active">Все</span>
-                <span class="chip">Сегодня</span>
-                <span class="chip">Неделя</span>
+                <span class="chip active">Все задачи</span>
             </div>
         </div>
         
@@ -82,18 +74,24 @@
                 </tr>
             </thead>
             <tbody>
+                {% for task in tasks %}
                 <tr>
-                    <td><input type="checkbox" id="t1" class="custom-cb"><label for="t1"></label></td>
-                    <td class="task-text">Потренить в зале</td>
-                    <td class="task-days">Пн, Ср, Пт</td>
-                    <td><span class="badge high">Важно</span></td>
+                    <td>
+                        <input type="checkbox" id="task-{{ task['id'] }}" class="custom-cb">
+                        <label for="task-{{ task['id'] }}"></label>
+                    </td>
+                    <td class="task-text">{{ task['name'] }}</td>
+                    <td class="task-days">{{ task['dade'] }}</td>
+                    <td>
+                        <span class="badge {{ task['priority'] }}">
+                            {% if task['priority'] == 'high' %} Высокий
+                            {% elif task['priority'] == 'medium' %} Средний
+                            {% else %} Низкий
+                            {% endif %}
+                        </span>
+                    </td>
                 </tr>
-                <tr>
-                    <td><input type="checkbox" id="t2" class="custom-cb"><label for="t2"></label></td>
-                    <td class="task-text">Купить продукты</td>
-                    <td class="task-days">8 Апреля</td>
-                    <td><span class="badge medium">Обычно</span></td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </main>
