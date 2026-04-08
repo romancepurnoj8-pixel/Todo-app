@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация | TaskManager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_log.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <div class="sidebar auth-sidebar">
+            <div class="auth-content">
+                <h2>Welcome Back!</h2>
+                <p>Планируйте свой день эффективно. Войдите, чтобы сохранить ваши задачи.</p>
+                <div class="auth-decoration">
+                    <div class="circle-1"></div>
+                    <div class="circle-2"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="todo-section auth-section">
+            
+            <div id="login-box" class="auth-box">
+                <h1>Вход в систему</h1>
+                <div class="filter-chips social-group">
+                    <div class="chip">Google</div>
+                    <div class="chip">GitHub</div>
+                </div>
+
+                <form action="{{ url_for('login') }}" method="POST">
+                    <div class="settings-group">
+                        <label>Имя пользователя (Email)</label>
+                        <input type="text" name="username" class="input-field" placeholder="example@mail.com" required>
+                    </div>
+                    <div class="settings-group">
+                        <label>Пароль</label>
+                        <input type="password" name="password" class="input-field" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="add-btn">Войти</button>
+                </form>
+                <p class="auth-footer">Нет аккаунта? <a href="#" onclick="toggleAuth()">Регистрация</a></p>
+            </div>
+
+            <div id="register-box" class="auth-box" style="display: none;">
+                <h1>Создать аккаунт</h1>
+                <form action="{{ url_for('register') }}" method="POST">
+                    <div class="settings-group">
+                        <label>Имя пользователя</label>
+                        <input type="text" name="username" class="input-field" placeholder="ivan_ivanov" required>
+                    </div>
+                    <div class="settings-group">
+                        <label>Пароль</label>
+                        <input type="password" name="password" class="input-field" placeholder="Придумайте пароль" required>
+                    </div>
+                    <button type="submit" class="add-btn">Зарегистрироваться</button>
+                </form>
+                <p class="auth-footer">Уже есть аккаунт? <a href="#" onclick="toggleAuth()">Войти</a></p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function toggleAuth() {
+            const loginBox = document.getElementById('login-box');
+            const regBox = document.getElementById('register-box');
+            if (loginBox.style.display === 'none') {
+                loginBox.style.display = 'block';
+                regBox.style.display = 'none';
+            } else {
+                loginBox.style.display = 'none';
+                regBox.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
