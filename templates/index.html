@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Aesthetic Planner Pro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <aside class="sidebar">
+        <div class="calendar">
+            <header><h2>Апрель 2026</h2></header>
+            <div class="days-grid">
+                <div class="day-name">Пн</div><div class="day-name">Вт</div><div class="day-name">Ср</div>
+                <div class="day-name">Чт</div><div class="day-name">Пт</div><div class="day-name">Сб</div><div class="day-name">Вс</div>
+                <span></span><span></span>
+                <div class="day">1</div><div class="day">2</div><div class="day">3</div><div class="day">4</div><div class="day">5</div>
+                <div class="day">6</div><div class="day">7</div><div class="day active">8</div><div class="day">9</div><div class="day">10</div>
+            </div>
+        </div>
+
+
+        <form action="/" method="POST">
+            <div class="add-task-form">
+                <h3>Новая задача</h3>
+            
+                <form action="/" method="POST">
+                    <div class="settings-group">
+                        <label>Название:</label>
+                        <input type="text" placeholder="Что нужно сделать?" class="input-field" name="todo_name" required>
+                    </div>
+                </form>
+
+                <form action="/" method="POST">
+                    <div class="settings-group" name="todo_priority">
+                        <label>Приоритет:</label>
+                        <select class="input-field select-priority">
+                            <option value="high">🔥 Высокий</option>
+                            <option value="medium" selected>⚡ Средний</option>
+                            <option value="low">🌱 Низкий</option>
+                        </select>
+                    </div>
+                </form>
+
+                <div class="settings-group">
+                    <label>Повтор:</label>
+                    <select class="input-field" name="todo_return">
+                        <option>Единоразово</option>
+                        <option>Каждый Пн</option>
+                        <option>Будни (Пн-Пт)</option>
+                         <option>Выходные</option>
+                    </select>
+
+                <div class="settings-group">
+                    <label>Дата:</label>
+                    <input type="date" class="input-field" name="todo_dade">
+                </div>
+
+                <button type="submit" class="add-btn">Добавить в список</button>
+
+            </div>
+        </form>
+
+</div>
+    </aside>
+
+    <main class="todo-section">
+        <div class="header-flex">
+            <h1>Мои задачи ✨</h1>
+            <div class="filter-chips">
+                <span class="chip active">Все</span>
+                <span class="chip">Сегодня</span>
+                <span class="chip">Неделя</span>
+            </div>
+        </div>
+        
+        <table class="todo-table">
+            <thead>
+                <tr>
+                    <th>OK</th>
+                    <th>Задача</th>
+                    <th>Дни / Дата</th>
+                    <th>Приоритет</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox" id="t1" class="custom-cb"><label for="t1"></label></td>
+                    <td class="task-text">Потренить в зале</td>
+                    <td class="task-days">Пн, Ср, Пт</td>
+                    <td><span class="badge high">Важно</span></td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" id="t2" class="custom-cb"><label for="t2"></label></td>
+                    <td class="task-text">Купить продукты</td>
+                    <td class="task-days">8 Апреля</td>
+                    <td><span class="badge medium">Обычно</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+
+</body>
+</html>
