@@ -10,13 +10,28 @@
 <div class="container">
     <aside class="sidebar">
         <div class="calendar">
-            <header><h2>Апрель 2026</h2></header>
+            <header>
+                <h2>{{ cal.get_month_name() }} {{ cal.year }}</h2>
+            </header>
             <div class="days-grid">
                 <div class="day-name">Пн</div><div class="day-name">Вт</div><div class="day-name">Ср</div>
                 <div class="day-name">Чт</div><div class="day-name">Пт</div><div class="day-name">Сб</div><div class="day-name">Вс</div>
-                <span></span><span></span>
-                <div class="day">1</div><div class="day">2</div><div class="day">3</div><div class="day">4</div><div class="day">5</div>
-                <div class="day">6</div><div class="day">7</div><div class="day active">8</div><div class="day">9</div><div class="day">10</div>
+                
+                {% for week in cal.get_days_matrix() %}
+                    {% for day in week %}
+                        {% if day == 0 %}
+                            <span></span> {% else %}
+                            <div class="day {% if cal.is_today(day) %}active{% endif %}">
+                                {{ day }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            
+            <div class="calendar-nav" style="display: flex; justify-content: space-between; margin-top: 10px;">
+                <a href="/?month={{ 12 if cal.month == 1 else cal.month - 1 }}&year={{ cal.year - 1 if cal.month == 1 else cal.year }}" style="text-decoration: none;">←</a>
+                <a href="/?month={{ 1 if cal.month == 12 else cal.month + 1 }}&year={{ cal.year + 1 if cal.month == 12 else cal.year }}" style="text-decoration: none;">→</a>
             </div>
         </div>
 
@@ -41,14 +56,16 @@
                 <div class="settings-group">
                     <label>Повтор:</label>
                     <select class="input-field" name="todo_return">
-                        <option>Единоразово</option>
-                        <option>Каждый Пн</option>
-                        <option>Будни (Пн-Пт)</option>
-                        <option>Выходные</option>
+                        <option value="once">Единоразово</option>
+                        <option value="mon">Каждый Пн</option>
+                        <option value="workdays">Будни (Пн-Пт)</option>
+                        <option value="weekend">Выходные</option>
                     </select>
-                </div> <div class="settings-group">
+                </div> 
+
+                <div class="settings-group">
                     <label>Дата:</label>
-                    <input type="date" class="input-field" name="todo_dade" required>
+                    <input type="date" class="input-field" name="todo_date" required value="{{ cal.year }}-{{ '%02d' % cal.month }}-{{ '%02d' % (cal.day_today or 1) }}">
                 </div>
 
                 <button type="submit" class="add-btn">Добавить в список</button>
@@ -60,7 +77,7 @@
         <div class="header-flex">
             <h1>Мои задачи ✨</h1>
             <div class="filter-chips">
-                <span class="chip active">Все задачи</span>
+                <span class="chip active">Все задачи ({{ tasks|length }})</span>
             </div>
         </div>
         
@@ -69,7 +86,7 @@
                 <tr>
                     <th>OK</th>
                     <th>Задача</th>
-                    <th>Дни / Дата</th>
+                    <th>Дата</th>
                     <th>Приоритет</th>
                 </tr>
             </thead>
@@ -77,11 +94,11 @@
                 {% for task in tasks %}
                 <tr>
                     <td>
-                        <input type="checkbox" id="task-{{ task['id'] }}" class="custom-cb">
-                        <label for="task-{{ task['id'] }}"></label>
+                        <input type="checkbox" id="task-{{ loop.index }}" class="custom-cb">
+                        <label for="task-{{ loop.index }}"></label>
                     </td>
                     <td class="task-text">{{ task['name'] }}</td>
-                    <td class="task-days">{{ task['dade'] }}</td>
+                    <td class="task-days">{{ task['date'] }}</td>
                     <td>
                         <span class="badge {{ task['priority'] }}">
                             {% if task['priority'] == 'high' %} Высокий
@@ -90,6 +107,10 @@
                             {% endif %}
                         </span>
                     </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 20px; color: #999;">Задач пока нет. Время отдыхать! ☕</td>
                 </tr>
                 {% endfor %}
             </tbody>
