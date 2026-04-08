@@ -20,9 +20,15 @@
                 {% for week in cal.get_days_matrix() %}
                     {% for day in week %}
                         {% if day == 0 %}
-                            <span></span> {% else %}
-                            <div class="day {% if cal.is_today(day) %}active{% endif %}">
-                                {{ day }}
+                            <span></span> 
+                        {% else %}
+                            {# Генерируем строку даты в формате YYYY-MM-DD для фильтрации #}
+                            {% set day_date = "%d-%02d-%02d"|format(cal.year, cal.month, day) %}
+                            <div class="day {% if cal.is_today(day) %}active{% endif %} {% if selected_date == day_date %}selected{% endif %}">
+                                <a href="/?date={{ day_date }}" 
+                                   style="text-decoration: none; color: inherit; display: block;">
+                                    {{ day }}
+                                </a>
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -65,7 +71,8 @@
 
                 <div class="settings-group">
                     <label>Дата:</label>
-                    <input type="date" class="input-field" name="todo_date" required value="{{ cal.year }}-{{ '%02d' % cal.month }}-{{ '%02d' % (cal.day_today or 1) }}">
+                    <input type="date" class="input-field" name="todo_date" required 
+                           value="{{ selected_date if selected_date else '%d-%02d-%02d'|format(cal.year, cal.month, cal.day_today or 1) }}">
                 </div>
 
                 <button type="submit" class="add-btn">Добавить в список</button>
@@ -75,9 +82,13 @@
 
     <main class="todo-section">
         <div class="header-flex">
-            <h1>Мои задачи ✨</h1>
+            {# Выводим заголовок в зависимости от фильтра #}
+            <h1>{{ display_title if display_title else "Мои задачи ✨" }}</h1>
             <div class="filter-chips">
-                <span class="chip active">Все задачи ({{ tasks|length }})</span>
+                <a href="/" class="chip {% if not selected_date %}active{% endif %}" style="text-decoration: none; color: inherit;">Все задачи ({{ tasks|length }})</a>
+                {% if selected_date %}
+                    <span class="chip active">{{ selected_date }}</span>
+                {% endif %}
             </div>
         </div>
         
@@ -93,12 +104,14 @@
             <tbody>
                 {% for task in tasks %}
                 <tr>
-                    <td>
-                        <input type="checkbox" id="task-{{ loop.index }}" class="custom-cb">
-                        <label for="task-{{ loop.index }}"></label>
-                    </td>
+                    <form>
+                        <td>
+                            <input type="submit" id="task-{{ task['id'] }}" class="custom-cb" name="subm_todo">
+                            <label for="task-{{ task['id'] }}"></label>
+                        </td>
+                    </form>
                     <td class="task-text">{{ task['name'] }}</td>
-                    <td class="task-days">{{ task['date'] }}</td>
+                    <td class="task-days">{{ task['dade'] }}</td>
                     <td>
                         <span class="badge {{ task['priority'] }}">
                             {% if task['priority'] == 'high' %} Высокий
@@ -110,7 +123,7 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="4" style="text-align: center; padding: 20px; color: #999;">Задач пока нет. Время отдыхать! ☕</td>
+                    <td colspan="4" style="text-align: center; padding: 20px; color: #999;">Задач на этот день нет. Время отдыхать! ☕</td>
                 </tr>
                 {% endfor %}
             </tbody>
